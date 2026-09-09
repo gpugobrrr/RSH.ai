@@ -184,8 +184,9 @@
   const vertices = model.verts;
   const edges = model.edges;
 
-  // Cycle Parameters
-  const CYCLE_DURATION = 18.0; // Seconds per complete continuous 4-phase loop
+  // Cycle Parameters:
+  // Complete period for a full twist-and-unwind cycle
+  const CYCLE_DURATION = 14.0; // Seconds per continuous twist/unwind cycle
 
   // State
   let width = 0;
@@ -219,90 +220,54 @@
 
   window.addEventListener('resize', resize);
 
-  // Compute 4-Phase Transformation for a given vertex
+  // Compute Continuous Twisting & Contorting Deformation for a given vertex
+  // Deforms as ONE connected structure, keeping wireframe lines attached.
+  // Upper sections twist progressively further than the base (spiral deformation).
+  // The structure bows inward (necking/radial pinch) as twist intensifies,
+  // then smoothly unwinds along the same path back to the original architectural shape.
   function computeVertexTransform(vObj, tau) {
     const v0 = vObj.pos;
-    const layer = vObj.layer;
-    const phi0 = vObj.phi;
     const r0 = vObj.r;
+    const phi0 = vObj.phi;
     const y0 = vObj.y;
 
-    // Fixed Outer Boundary Expansion Limits per Layer
-    let drMax = 0;
-    let dyMax = 0;
-    if (layer === 0) { drMax = 0.38; dyMax = -0.28; }
-    else if (layer === 1) { drMax = 0.55; dyMax = -0.06; }
-    else if (layer === 2) { drMax = 0.50; dyMax = 0.16; }
-    else if (layer === 3) { drMax = 0.42; dyMax = 0.48; }
-    else if (layer === 4) { drMax = 0.12; dyMax = 0.82; }
+    // Normalised height hNorm in [0, 1] from bottom of base (-0.65) to apex (2.08)
+    const yMin = -0.65;
+    const yMax = 2.08;
+    const hNorm = Math.max(0, Math.min(1, (y0 - yMin) / (yMax - yMin)));
 
-    const rBound = r0 * (1 + drMax);
-    const yBound = y0 + dyMax;
+    // Continuous deformation cycle intensity D in [0, 1]:
+    // D = 0 at start, peaks at D = 1 at midpoint (tau = 0.5), returns smoothly to D = 0 at tau = 1.0.
+    // Uses smooth cosine envelope (0.5 * (1 - cos(2 * pi * tau))) ensuring C1 continuity and seamless looping.
+    const D = 0.5 * (1 - Math.cos(tau * Math.PI * 2));
 
-    // Folded Target Coordinates at the inflection of Phase 3
-    let p3R = rBound;
-    let p3Y = yBound;
-    let p3Phi = phi0;
+    // 1. Progressive Spiral Twist Angle:
+    // Base stays grounded (twist near 0), upper drum, dome and lantern twist progressively further.
+    // Quadratic easing along height (hNorm^1.35) provides a realistic structural torsion spiral.
+    // Maximum twist at the summit is ~1.75 radians (~100 degrees).
+    const maxTwistAtApex = 1.75;
+    const twistAngle = D * maxTwistAtApex * Math.pow(hNorm, 1.35);
 
-    if (layer === 3) {
-      // Dome: iris flower inward curl
-      p3R = rBound * 0.42;
-      p3Y = yBound - 0.38;
-      p3Phi = phi0 + 0.65;
-    } else if (layer === 1) {
-      // Drum & Columns: radial inward tilt
-      p3R = rBound * 0.48;
-      p3Y = yBound + 0.18;
-      p3Phi = phi0 + 0.45;
-    } else if (layer === 4) {
-      // Lantern: core descent through dome iris
-      p3R = rBound * 0.75;
-      p3Y = yBound - 1.05;
-      p3Phi = phi0 - 0.30;
-    } else if (layer === 0) {
-      // Base: compact upward contraction
-      p3R = rBound * 0.62;
-      p3Y = yBound + 0.28;
-      p3Phi = phi0 + 0.22;
-    } else {
-      // Balustrade
-      p3R = rBound * 0.55;
-      p3Y = yBound - 0.12;
-      p3Phi = phi0 - 0.40;
-    }
+    // 2. Inward Bowing (Radial Pinching / Contortion):
+    // Bowing is most pronounced in the mid-body (drum and spring of the dome, hNorm ~ 0.45 - 0.70),
+    // creating a graceful hour-glass / waisted contortion while preserving the structural integrity.
+    // Inward pinch factor reaches up to 28% radial reduction at maximum twist.
+    const pinchProfile = Math.sin(hNorm * Math.PI); // 0 at base and apex, peaks at mid-height
+    const bowFactor = 1.0 - (D * 0.28 * Math.pow(pinchProfile, 1.2));
+    const curR = r0 * bowFactor;
 
-    // Quadrant Partition:
-    if (tau < 0.25) {
-      // 1. Assembled building rotates slowly around vertical axis
-      return [v0[0], v0[1], v0[2]];
-    } else if (tau < 0.50) {
-      // 2. Architectural layers separate and expand toward fixed outer boundary
-      const p = (tau - 0.25) / 0.25;
-      const E = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
+    // 3. Subtle Vertical Contortion (Torsional Compression):
+    // As the structure twists and bows, it experiences slight vertical compression / flexure.
+    const compressionFactor = 1.0 - (D * 0.05 * Math.pow(hNorm, 1.5));
+    const curY = y0 * compressionFactor;
 
-      const curR = r0 * (1 + drMax * E);
-      const curY = y0 + dyMax * E;
-      return [curR * Math.cos(phi0), curY, curR * Math.sin(phi0)];
-    } else if (tau < 0.75) {
-      // 3. At outer boundary, components turn inward and fold toward the centre
-      const p = (tau - 0.50) / 0.25;
-      const F = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
+    const curPhi = phi0 + twistAngle;
 
-      // Coordinated folding motion: pitch tilt around tangent + radial contraction + twist
-      const curR = rBound + (p3R - rBound) * F;
-      const curY = yBound + (p3Y - yBound) * F;
-      const curPhi = phi0 + (p3Phi - phi0) * F;
-      return [curR * Math.cos(curPhi), curY, curR * Math.sin(curPhi)];
-    } else {
-      // 4. Unfold and reassemble into recognisable building (seamless loop)
-      const p = (tau - 0.75) / 0.25;
-      const U = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
-
-      const curR = p3R + (r0 - p3R) * U;
-      const curY = p3Y + (y0 - p3Y) * U;
-      const curPhi = p3Phi + (phi0 - p3Phi) * U;
-      return [curR * Math.cos(curPhi), curY, curR * Math.sin(curPhi)];
-    }
+    return [
+      curR * Math.cos(curPhi),
+      curY,
+      curR * Math.sin(curPhi)
+    ];
   }
 
   // 3D Rotations
