@@ -185,8 +185,8 @@
   const edges = model.edges;
 
   // Cycle Parameters:
-  // Complete period for a full twist-and-unwind cycle
-  const CYCLE_DURATION = 14.0; // Seconds per continuous twist/unwind cycle
+  // Complete period for a full tesseract continuous inversion loop
+  const CYCLE_DURATION = 16.0; // Seconds per seamless inversion loop
 
   // State
   let width = 0;
@@ -220,48 +220,74 @@
 
   window.addEventListener('resize', resize);
 
-  // Compute Continuous Twisting & Contorting Deformation for a given vertex
-  // Deforms as ONE connected structure, keeping wireframe lines attached.
-  // Upper sections twist progressively further than the base (spiral deformation).
-  // The structure bows inward (necking/radial pinch) as twist intensifies,
-  // then smoothly unwinds along the same path back to the original architectural shape.
+  // Compute Continuous Geometric Inversion (Tesseract-Inspired 4D Hyperspatial Rotation)
+  // - Replaces twist-and-unwind with continuous geometric inversion through itself.
+  // - Inner contours expand outward, outer contours fold toward the centre through a 4D hypersphere (x, y, z, w).
+  // - Periodically resolves into the canonical, recognisable Radcliffe Camera at tau = 0 (and tau = 1).
+  // - Deforms as one connected wireframe structure with smooth C1 continuous motion, no pauses or jumps.
   function computeVertexTransform(vObj, tau) {
-    const v0 = vObj.pos;
+    const [x0, y0, z0] = vObj.pos;
     const r0 = vObj.r;
     const phi0 = vObj.phi;
-    const y0 = vObj.y;
 
-    // Normalised height hNorm in [0, 1] from bottom of base (-0.65) to apex (2.08)
-    const yMin = -0.65;
-    const yMax = 2.08;
-    const hNorm = Math.max(0, Math.min(1, (y0 - yMin) / (yMax - yMin)));
+    // Normalised height hNorm in [-1, 1] relative to building center
+    const yCenter = 0.70;
+    const ySpan = 1.40;
+    const hRel = (y0 - yCenter) / ySpan; // roughly in [-1.0, 1.0]
 
-    // Continuous deformation cycle intensity D in [0, 1]:
-    // D = 0 at start, peaks at D = 1 at midpoint (tau = 0.5), returns smoothly to D = 0 at tau = 1.0.
-    // Uses smooth cosine envelope (0.5 * (1 - cos(2 * pi * tau))) ensuring C1 continuity and seamless looping.
-    const D = 0.5 * (1 - Math.cos(tau * Math.PI * 2));
+    // Embed canonical 3D Radcliffe Camera into 4D space (X, Y, Z, W)
+    // Canonical shape has W0 = 0, so the 4D radius is R4D = sqrt(r0^2 + hRel^2)
+    // Points closer to the vertical core have smaller 3D radius (inner contours).
+    // Points at the exterior colonnade, plinth, and dome perimeter have larger radius (outer contours).
+    const psi0 = Math.atan2(hRel, Math.max(r0, 0.12)); // latitude angle in elevation-radius plane
 
-    // 1. Progressive Spiral Twist Angle:
-    // Base stays grounded (twist near 0), upper drum, dome and lantern twist progressively further.
-    // Quadratic easing along height (hNorm^1.35) provides a realistic structural torsion spiral.
-    // Maximum twist at the summit is ~1.75 radians (~100 degrees).
-    const maxTwistAtApex = 1.75;
-    const twistAngle = D * maxTwistAtApex * Math.pow(hNorm, 1.35);
+    // 4D Inversion Angle theta4D in [0, 2*PI)
+    // Complete 360-degree hyperspatial rotation in the XZ-W or R-W-Y plane.
+    const theta4D = tau * Math.PI * 2;
 
-    // 2. Inward Bowing (Radial Pinching / Contortion):
-    // Bowing is most pronounced in the mid-body (drum and spring of the dome, hNorm ~ 0.45 - 0.70),
-    // creating a graceful hour-glass / waisted contortion while preserving the structural integrity.
-    // Inward pinch factor reaches up to 28% radial reduction at maximum twist.
-    const pinchProfile = Math.sin(hNorm * Math.PI); // 0 at base and apex, peaks at mid-height
-    const bowFactor = 1.0 - (D * 0.28 * Math.pow(pinchProfile, 1.2));
-    const curR = r0 * bowFactor;
+    // In a 4D tesseract rotation (stereographic / perspective 4D->3D projection):
+    // As theta4D rotates:
+    // W' = r0 * sin(theta4D) + hRel * cos(theta4D)
+    // The projection factor into 3D is 1 / (d4 - W'), which creates the signature tesseract
+    // "inner cube expanding outward while outer cube turns inside-out and shrinks into the core".
+    
+    // We compute the continuous toroidal self-inversion vector:
+    // Radial evolution: r(tau) and vertical evolution: y(tau)
+    // Inversion cycle: outer parts fold inward through the core; core emerges and blossoms into the outer shell.
+    const cos4D = Math.cos(theta4D);
+    const sin4D = Math.sin(theta4D);
 
-    // 3. Subtle Vertical Contortion (Torsional Compression):
-    // As the structure twists and bows, it experiences slight vertical compression / flexure.
-    const compressionFactor = 1.0 - (D * 0.05 * Math.pow(hNorm, 1.5));
-    const curY = y0 * compressionFactor;
+    // Continuous 4D rotation in the (R, W) plane:
+    // When cos4D = 1 (tau = 0, tau = 1), R = r0, W = 0 -> exact canonical Radcliffe Camera.
+    // When cos4D moves toward -1, the outer boundary and inner core invert roles.
+    const R_4D = r0;
+    const W_4D = (1.1 - r0) * Math.sin(psi0); // inner core vertices have distinct 4th-dimension coordinates
 
-    const curPhi = phi0 + twistAngle;
+    const rRot = R_4D * cos4D - W_4D * sin4D;
+    const wRot = R_4D * sin4D + W_4D * cos4D;
+
+    // Stereographic 4D-to-3D projection factor with hyperspatial camera distance d4 = 2.4:
+    // Guarantees smooth non-zero denominator (bounded between [0.65, 1.45])
+    const d4 = 2.4;
+    const proj4D = d4 / (d4 - wRot * 0.75);
+
+    // Toroidal self-inversion displacement:
+    // Outer contours curve toward center, inner contours blossom outward.
+    // Blend with canonical geometry smoothly so at tau = 0 the architectural features are perfectly recognizable.
+    const inversionBlend = 0.5 * (1 - Math.cos(theta4D)); // 0 at tau=0, 1 at tau=0.5, 0 at tau=1
+
+    // New projected radius:
+    const invertedR = Math.abs(rRot * proj4D);
+    const curR = r0 * (1 - inversionBlend) + invertedR * inversionBlend;
+
+    // Vertical self-inversion flow:
+    // Components pass through the central meridian like an inverted torus:
+    const verticalFlow = Math.sin(theta4D) * 0.45 * Math.cos(psi0);
+    const curY = y0 + verticalFlow * (0.8 + 0.4 * Math.sin(phi0 * 2));
+
+    // Continuous subtle hyperspatial twist along vertical axis during inversion
+    const hyperTwist = Math.sin(theta4D) * 0.75 * Math.sin(hRel * Math.PI * 0.5);
+    const curPhi = phi0 + hyperTwist;
 
     return [
       curR * Math.cos(curPhi),
