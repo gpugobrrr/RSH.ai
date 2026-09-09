@@ -1,5 +1,6 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    BUILD SOMETHING — Flat Acid-Yellow & Red-Orange Minimalist Poster
+   Middle Aligned Content with Email Aligned Right with Text
    ========================================================================== */
 
 :root {
@@ -65,14 +66,15 @@ body.broadcast-body {
 .reg-cross.bottom-left { bottom: max(0.85rem, env(safe-area-inset-bottom)); left: max(0.85rem, env(safe-area-inset-left)); }
 .reg-cross.bottom-right { bottom: max(0.85rem, env(safe-area-inset-bottom)); right: max(0.85rem, env(safe-area-inset-right)); }
 
-/* Poster Stage: Vertical Layout */
+/* Poster Stage: Vertically and Horizontally Centered Middle Layout */
 .poster-stage {
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center; /* Middle vertically */
+  align-items: center;
   position: relative;
   overflow-x: clip;
   padding: max(1.25rem, env(safe-area-inset-top))
@@ -103,7 +105,7 @@ body.broadcast-body {
   display: block;
 }
 
-/* Poster Content & Massive Vertical Typography */
+/* Poster Content: Middle Aligned */
 .poster-content {
   position: relative;
   z-index: 2;
@@ -111,8 +113,7 @@ body.broadcast-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 0.5rem;
-  margin-bottom: auto;
+  margin: auto 0; /* Middle vertically aligned */
   pointer-events: none;
 }
 
@@ -144,23 +145,23 @@ body.broadcast-body {
   transform: scaleY(1.02);
 }
 
-/* Ultra-Minimalist Contact Footer with Single Top Line & Bottom Right Alignment */
+/* Contact Block: Line Over Top & Aligned Right with Text */
 .contact-block {
   position: relative;
   z-index: 10;
-  background-color: var(--color-bg);
   border-top: var(--border-thick); /* Line over the top */
   padding-top: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Bottom Right */
+  justify-content: flex-end; /* Aligned with right of text */
   width: 100%;
+  pointer-events: auto;
 }
 
 .contact-email {
   font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 2.8vw, 1.25rem);
+  font-size: clamp(0.95rem, 2.8vw, 1.35rem);
   font-weight: 700;
   color: var(--color-primary);
   text-decoration: none;
@@ -168,7 +169,7 @@ body.broadcast-body {
   padding: 0 0.5rem;
   display: inline-flex;
   align-items: center;
-  margin-left: auto; /* Bottom Right alignment */
+  margin-left: auto; /* Right alignment */
   transition: background-color 0.15s ease, color 0.15s ease;
   touch-action: manipulation;
 }
