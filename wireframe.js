@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BUILD SOMETHING — NFRSTCT HIGH PRECISION LAB
  * Stylised 3D Wireframe Model: Oxford Radcliffe Camera
  * Continuous 4-Phase Architectural Transformation Cycle
@@ -341,10 +341,11 @@
 
     const pitchAngle = 0.32; // Elevated viewpoint (~18.5 deg)
     const isMobile = width < 640;
-    const scale = Math.min(width, height) * (isMobile ? 0.32 : 0.36);
+    const scale = Math.min(width, height) * (isMobile ? 0.28 : 0.34);
 
-    const centerX = isMobile ? width * 0.50 : width * 0.56;
-    const centerY = isMobile ? height * 0.54 : height * 0.55;
+    // Positioned above the SOMETHING text so it is prominent and visible
+    const centerX = isMobile ? width * 0.50 : width * 0.62;
+    const centerY = isMobile ? height * 0.38 : height * 0.33;
 
     // Normalised cycle position tau in [0, 1)
     const tau = isReducedMotion || forceStatic
