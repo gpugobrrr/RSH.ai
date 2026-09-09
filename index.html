@@ -1,245 +1,50 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>NFRSTCT — High Precision Lab</title>
-  <meta name="description" content="A lab for ambitious builders. Deep expertise, powerful tools, working technology.">
+  <title>BUILD SOMETHING</title>
+  <meta name="description" content="NFRSTCT — High Precision Lab">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=Syne:wght@900&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="broadcast-body">
+  <!-- Risograph Texture Overlay -->
   <svg class="texture-filter-defs" aria-hidden="true" width="0" height="0">
     <defs>
       <filter id="print-grain">
         <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" result="noise" />
         <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.08 0" />
       </filter>
-      
-      <pattern id="halftone-dense" width="8" height="8" patternUnits="userSpaceOnUse">
-        <circle cx="4" cy="4" r="2.8" fill="var(--color-primary)" />
-      </pattern>
-      <pattern id="halftone-sparse" width="12" height="12" patternUnits="userSpaceOnUse">
-        <circle cx="6" cy="6" r="2" fill="var(--color-primary)" />
-      </pattern>
     </defs>
   </svg>
 
   <div class="print-grain-overlay" aria-hidden="true"></div>
 
-  <div class="technical-frame" id="top">
-    <main class="broadcast-stage">
-      <div class="stage-grid-lines" aria-hidden="true">
-        <div class="col-rule r-1"></div>
-        <div class="col-rule r-2"></div>
-        <div class="col-rule r-3"></div>
-      </div>
+  <main class="poster-stage">
+    <!-- Corner Registration Crosses (+) -->
+    <div class="reg-cross top-left" aria-hidden="true">+</div>
+    <div class="reg-cross top-right" aria-hidden="true">+</div>
+    <div class="reg-cross bottom-left" aria-hidden="true">+</div>
+    <div class="reg-cross bottom-right" aria-hidden="true">+</div>
 
-      <div class="wireframe-container" id="wireframe-mount">
-        <canvas id="wireframe-canvas" aria-label="Animated mathematical 4D hypercube wireframe geometry rotating in real time"></canvas>
-      </div>
-
-      <div class="stage-content-layer">
-        <div class="headline-container">
-          <h1 class="headline-title">
-            <span class="headline-row row-1">BUILD</span>
-            <span class="headline-row row-2">SOMETHING</span>
-            <span class="headline-row row-3">THAT</span>
-            <span class="headline-row row-4">MATTERS</span>
-            <span class="headline-row row-5">TO YOU.</span>
-          </h1>
-        </div>
-
-        <div class="broadcast-body-grid">
-          <div class="grid-col mission-col">
-            <div class="col-header-marker">
-              <span class="marker-code">// 01</span>
-              <span class="marker-title">FIRST COHORT: HIGH PRECISION LAB</span>
-            </div>
-            <p class="mission-statement">
-              A lab for ambitious builders. Deep expertise, powerful tools, working technology.
-            </p>
-            <div class="halftone-block halftone-col-a" aria-hidden="true"></div>
-          </div>
-
-          <div class="grid-col pillars-col">
-            <div class="col-header-marker">
-              <span class="marker-code">// 02</span>
-              <span class="marker-title">DISCIPLINE & BENCHMARK</span>
-            </div>
-            <div class="pillars-list" role="list">
-              <button type="button" class="pillar-item pillar-btn active" data-preset="TESSERACT" aria-label="Activate Tesseract 4D benchmark mode">
-                <span class="pillar-num" aria-hidden="true">01</span>
-                <span class="pillar-term">EXPERIMENT</span>
-                <span class="pillar-tag">[4D-HYPERCUBE]</span>
-              </button>
-              <button type="button" class="pillar-item pillar-btn" data-preset="STELLATED" aria-label="Activate Stellated Octahedron benchmark mode">
-                <span class="pillar-num" aria-hidden="true">02</span>
-                <span class="pillar-term">BUILD</span>
-                <span class="pillar-tag">[STELLATED]</span>
-              </button>
-              <button type="button" class="pillar-item pillar-btn" data-preset="TOROIDAL" aria-label="Activate Toroidal Geodesic benchmark mode">
-                <span class="pillar-num" aria-hidden="true">03</span>
-                <span class="pillar-term">DEMONSTRATE</span>
-                <span class="pillar-tag">[TOROIDAL]</span>
-              </button>
-            </div>
-            
-            <div class="bench-telemetry-panel">
-              <div class="telemetry-readout" id="bench-readout" aria-live="polite">
-                <span>SPEC: TESSERACT 4D</span> // <span id="telemetry-fps">60 FPS</span> // <span id="telemetry-verts">16 VERTS</span>
-              </div>
-              <button type="button" class="btn-copy-spec" id="btn-copy-spec" aria-label="Copy active mathematical geometry specification to clipboard">
-                <span id="copy-spec-label">EXPORT MATRIX SPEC</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="grid-col action-col">
-            <div class="col-header-marker" aria-hidden="true">
-              <span class="marker-code">// 03</span>
-              <span class="marker-title">DISPATCH</span>
-            </div>
-            
-            <div class="action-box">
-              <button 
-                type="button" 
-                class="btn-primary-action" 
-                id="register-trigger"
-                aria-haspopup="dialog"
-                aria-controls="register-dialog"
-                aria-expanded="false"
-              >
-                <span class="btn-label">REGISTER INTEREST</span>
-                <span class="btn-icon" aria-hidden="true">→</span>
-              </button>
-              
-              <div class="action-caption">
-                <span class="caption-marker">SEC_PROTO //</span>
-                <span>OPEN REGISTRATION FOR FOUNDING BUILDERS</span>
-              </div>
-            </div>
-
-            <div class="halftone-block halftone-col-c" aria-hidden="true"></div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <footer class="broadcast-footer">
-      <div class="footer-left">
-        <span class="reg-cross" aria-hidden="true">+</span>
-        <span class="footer-spec">SYS.NFRSTCT // HIGH PRECISION LAB // BROADCAST VER 1.0</span>
-      </div>
-      <div class="footer-center">
-        <button type="button" class="btn-motion-toggle" id="motion-toggle" aria-pressed="false">
-          <span class="toggle-indicator" aria-hidden="true"></span>
-          <span class="toggle-text">WIRE-ROTATION: ACTIVE</span>
-        </button>
-      </div>
-      <div class="footer-right">
-        <span class="footer-spec">CALIB_LOCK: 100% OK</span>
-        <span class="reg-cross" aria-hidden="true">+</span>
-      </div>
-    </footer>
-  </div>
-
-  <dialog class="technical-dialog" id="register-dialog" aria-labelledby="dialog-title">
-    <div class="dialog-interior">
-      <div class="dialog-header">
-        <div class="dialog-title-group">
-          <span class="reg-cross" aria-hidden="true">+</span>
-          <h2 id="dialog-title" class="dialog-title">REGISTER INTEREST</h2>
-        </div>
-        <button type="button" class="dialog-close" id="dialog-close-btn" aria-label="Close registration dialog">
-          <span aria-hidden="true">✕</span>
-        </button>
-      </div>
-
-      <div class="dialog-sub">
-        <span>FIRST COHORT: HIGH PRECISION LAB</span>
-        <span>SPEC // APPLICANT DISPATCH</span>
-      </div>
-
-      <form class="dialog-form" id="register-form" novalidate>
-        <!-- 
-          REGISTRATION_ENDPOINT_PLACEHOLDER:
-          Configure production registration POST URL below in 'action' or in app.js.
-          Currently operates in client verification mode with clear diagnostic feedback.
-        -->
-        <div class="endpoint-notice" role="note">
-          <span class="notice-tag">ENDPOINT NOTICE</span>
-          <p class="notice-body">
-            Registration destination endpoint not yet configured. Connecting form action or webhook will enable live ingestion.
-          </p>
-        </div>
-
-        <div class="form-field">
-          <label for="applicant-name" class="field-label">FULL NAME / CALLSIGN</label>
-          <input 
-            type="text" 
-            id="applicant-name" 
-            name="name" 
-            class="field-input" 
-            placeholder="E.G. A. LOVELACE" 
-            required
-            autocomplete="name"
-          >
-          <span class="field-error" id="name-error" aria-live="polite"></span>
-        </div>
-
-        <div class="form-field">
-          <label for="applicant-email" class="field-label">COMMUNICATION ENDPOINT (EMAIL)</label>
-          <input 
-            type="email" 
-            id="applicant-email" 
-            name="email" 
-            class="field-input" 
-            placeholder="BUILDER@DOMAIN.EXT" 
-            required
-            autocomplete="email"
-          >
-          <span class="field-error" id="email-error" aria-live="polite"></span>
-        </div>
-
-        <div class="form-field">
-          <label for="applicant-focus" class="field-label">PRIMARY DISCIPLINE</label>
-          <select id="applicant-focus" name="focus" class="field-input field-select" required>
-            <option value="" disabled selected>SELECT PRIMARY FOCUS</option>
-            <option value="systems">SYSTEMS & ARCHITECTURE</option>
-            <option value="ai-infrastructure">MACHINE LEARNING & INFERENCE</option>
-            <option value="hardware">HARDWARE & PRECISION MECHANICS</option>
-            <option value="tools">SPECIALIST DEVELOPER TOOLS</option>
-          </select>
-          <span class="field-error" id="focus-error" aria-live="polite"></span>
-        </div>
-
-        <div class="dialog-actions">
-          <button type="submit" class="btn-submit">
-            <span>DISPATCH REGISTRATION</span>
-            <span aria-hidden="true">→</span>
-          </button>
-          <button type="button" class="btn-cancel" id="dialog-cancel-btn">
-            <span>CANCEL</span>
-          </button>
-        </div>
-      </form>
-
-      <div class="transmission-status" id="transmission-status" hidden>
-        <div class="status-banner">
-          <span class="status-flag">RECORD COMPILED</span>
-        </div>
-        <div class="status-console" id="status-console"></div>
-        <button type="button" class="btn-reset" id="status-reset-btn">
-          <span>MODIFY ENTRY</span>
-        </button>
-      </div>
+    <!-- Animated Mathematical 4D Geometry Canvas -->
+    <div class="wireframe-container" id="wireframe-mount">
+      <canvas id="wireframe-canvas" aria-label="Animated 4D mathematical wireframe geometry"></canvas>
     </div>
-  </dialog>
+
+    <!-- Massive Screen-Filling Typography -->
+    <div class="poster-content">
+      <h1 class="poster-headline">
+        <span class="row-1">BUILD</span>
+        <span class="row-2">SOMETHING</span>
+      </h1>
+    </div>
+  </main>
 
   <script src="wireframe.js"></script>
   <script src="app.js"></script>
