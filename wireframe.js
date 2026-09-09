@@ -1,13 +1,13 @@
 ﻿/**
  * BUILD SOMETHING — NFRSTCT HIGH PRECISION LAB
  * Stylised 3D Wireframe Model: Oxford Radcliffe Camera
+ * Continuous 4-Phase Architectural Transformation Cycle
  * 
- * Features:
- * - Parametric 3D Architectural Model (Dome, Lantern, Colonnade Drum, Base Plinth)
- * - Slow rotation around vertical Y-axis (upright technical architectural model)
- * - Elevated viewpoint (pitch angle ~18.5 degrees) for architectural depth
- * - Razor-sharp thin red-orange vector lines against flat acid-yellow canvas
- * - Non-blocking touch pan-y & reduced-motion support
+ * 4-Phase Cycle:
+ * 1. Assembled building rotates slowly around vertical axis
+ * 2. Architectural layers separate and expand toward fixed outer boundary
+ * 3. Components turn inward and fold toward the centre while rotation continues
+ * 4. Components unfold and reassemble into the recognisable building (seamless loop)
  */
 
 (function () {
@@ -19,67 +19,78 @@
   const ctx = canvas.getContext('2d');
   const container = document.getElementById('wireframe-mount');
 
-  // Generate 3D Radcliffe Camera Architectural Mesh
-  function buildRadcliffeCamera3D() {
-    const verts = [];
-    const edg = [];
+  // Build Parametric 3D Radcliffe Camera with Layer Metadata
+  function buildRadcliffeCameraModel() {
+    const rawVerts = [];
+    const edges = [];
 
-    // Helper: Add circular ring at Y height
-    function addRing(y, radius, segments) {
-      const startIdx = verts.length;
+    function addVertex(x, y, z, layer) {
+      const idx = rawVerts.length;
+      const r = Math.sqrt(x * x + z * z);
+      const phi = Math.atan2(z, x);
+      rawVerts.push({
+        pos: [x, y, z],
+        layer: layer, // 0: Base, 1: Drum/Columns, 2: Balustrade, 3: Dome, 4: Lantern
+        r: r,
+        phi: phi,
+        y: y
+      });
+      return idx;
+    }
+
+    function addRing(y, radius, segments, layer) {
+      const startIdx = rawVerts.length;
       for (let i = 0; i < segments; i++) {
         const angle = (i / segments) * Math.PI * 2;
-        verts.push([radius * Math.cos(angle), y, radius * Math.sin(angle)]);
+        addVertex(radius * Math.cos(angle), y, radius * Math.sin(angle), layer);
       }
       for (let i = 0; i < segments; i++) {
-        edg.push([startIdx + i, startIdx + ((i + 1) % segments)]);
+        edges.push([startIdx + i, startIdx + ((i + 1) % segments)]);
       }
       return startIdx;
     }
 
-    // Helper: Add cylindrical level with vertical wall struts
-    function addCylinder(yBottom, yTop, radius, segments, connectStruts = true) {
-      const bStart = addRing(yBottom, radius, segments);
-      const tStart = addRing(yTop, radius, segments);
+    function addCylinder(yBottom, yTop, radius, segments, layer, connectStruts = true) {
+      const bStart = addRing(yBottom, radius, segments, layer);
+      const tStart = addRing(yTop, radius, segments, layer);
       if (connectStruts) {
         for (let i = 0; i < segments; i++) {
-          edg.push([bStart + i, tStart + i]);
+          edges.push([bStart + i, tStart + i]);
         }
       }
       return { bStart, tStart };
     }
 
-    // 1. Rusticated Base Plinth (16-sided, y = -0.65 to 0.0, radius = 1.0)
-    addCylinder(-0.65, 0.0, 1.0, 16);
-    addRing(-0.32, 1.02, 16); // Intermediate rustication cornice
+    // --- Layer 0: Rusticated Base Plinth & Portals (y: -0.65 to 0.0) ---
+    addCylinder(-0.65, 0.0, 1.0, 16, 0);
+    addRing(-0.32, 1.02, 16, 0); // Mid rustication ring
 
-    // 8 Base Portal Arch Entrances
+    // 8 Base Arched Portal Entrances
     for (let i = 0; i < 8; i++) {
       const angle = (i / 8) * Math.PI * 2;
       const r = 1.01;
       const x = r * Math.cos(angle);
       const z = r * Math.sin(angle);
-      const tangentX = -Math.sin(angle) * 0.1;
-      const tangentZ = Math.cos(angle) * 0.1;
+      const tx = -Math.sin(angle) * 0.09;
+      const tz = Math.cos(angle) * 0.09;
 
-      const pBase = verts.length;
-      verts.push([x - tangentX, -0.65, z - tangentZ]);
-      verts.push([x + tangentX, -0.65, z + tangentZ]);
-      verts.push([x - tangentX, -0.22, z - tangentZ]);
-      verts.push([x + tangentX, -0.22, z + tangentZ]);
-      verts.push([x, -0.08, z]); // Arch apex
+      const p0 = addVertex(x - tx, -0.65, z - tz, 0);
+      const p1 = addVertex(x + tx, -0.65, z + tz, 0);
+      const p2 = addVertex(x - tx, -0.22, z - tz, 0);
+      const p3 = addVertex(x + tx, -0.22, z + tz, 0);
+      const p4 = addVertex(x, -0.08, z, 0); // Arch apex
 
-      edg.push([pBase, pBase + 2]);
-      edg.push([pBase + 1, pBase + 3]);
-      edg.push([pBase + 2, pBase + 4]);
-      edg.push([pBase + 3, pBase + 4]);
+      edges.push([p0, p2]);
+      edges.push([p1, p3]);
+      edges.push([p2, p4]);
+      edges.push([p3, p4]);
     }
 
-    // 2. Main Colonnade Drum (16-sided, y = 0.0 to 0.58, radius = 0.82)
-    addCylinder(0.0, 0.58, 0.82, 16);
-    addRing(0.28, 0.84, 16); // Mid-drum band
+    // --- Layer 1: Colonnade Drum & 12 Columns (y: 0.0 to 0.58) ---
+    addCylinder(0.0, 0.58, 0.82, 16, 1);
+    addRing(0.28, 0.84, 16, 1); // Mid drum band
 
-    // 12 Classical Columns around the Drum
+    // 12 Evenly Spaced Columns
     const numColumns = 12;
     for (let i = 0; i < numColumns; i++) {
       const angle = (i / numColumns) * Math.PI * 2;
@@ -87,51 +98,47 @@
       const cx = colR * Math.cos(angle);
       const cz = colR * Math.sin(angle);
 
-      const colStart = verts.length;
-      verts.push([cx, 0.0, cz]);
-      verts.push([cx, 0.58, cz]);
-      edg.push([colStart, colStart + 1]);
+      const c0 = addVertex(cx, 0.0, cz, 1);
+      const c1 = addVertex(cx, 0.58, cz, 1);
+      edges.push([c0, c1]);
 
-      // Column capital detail
-      const capStart = verts.length;
+      // Column capital cross tick
       const tx = -Math.sin(angle) * 0.035;
       const tz = Math.cos(angle) * 0.035;
-      verts.push([cx - tx, 0.55, cz - tz]);
-      verts.push([cx + tx, 0.55, cz + tz]);
-      edg.push([capStart, capStart + 1]);
+      const cap0 = addVertex(cx - tx, 0.55, cz - tz, 1);
+      const cap1 = addVertex(cx + tx, 0.55, cz + tz, 1);
+      edges.push([cap0, cap1]);
     }
 
-    // 12 Arched Windows in Drum
+    // 12 Arched Windows
     for (let i = 0; i < 12; i++) {
       const angle = ((i + 0.5) / 12) * Math.PI * 2;
       const winR = 0.83;
       const wx = winR * Math.cos(angle);
       const wz = winR * Math.sin(angle);
-      const tx = -Math.sin(angle) * 0.07;
-      const tz = Math.cos(angle) * 0.07;
+      const tx = -Math.sin(angle) * 0.065;
+      const tz = Math.cos(angle) * 0.065;
 
-      const wBase = verts.length;
-      verts.push([wx - tx, 0.12, wz - tz]);
-      verts.push([wx + tx, 0.12, wz + tz]);
-      verts.push([wx - tx, 0.38, wz - tz]);
-      verts.push([wx + tx, 0.38, wz + tz]);
-      verts.push([wx, 0.45, wz]); // Window arch top
+      const w0 = addVertex(wx - tx, 0.12, wz - tz, 1);
+      const w1 = addVertex(wx + tx, 0.12, wz + tz, 1);
+      const w2 = addVertex(wx - tx, 0.38, wz - tz, 1);
+      const w3 = addVertex(wx + tx, 0.38, wz + tz, 1);
+      const w4 = addVertex(wx, 0.45, wz, 1);
 
-      edg.push([wBase, wBase + 2]);
-      edg.push([wBase + 1, wBase + 3]);
-      edg.push([wBase + 2, wBase + 4]);
-      edg.push([wBase + 3, wBase + 4]);
+      edges.push([w0, w2]);
+      edges.push([w1, w3]);
+      edges.push([w2, w4]);
+      edges.push([w3, w4]);
     }
 
-    // 3. Upper Balustrade & Cornice (y = 0.58 to 0.66, radius = 0.86)
-    addCylinder(0.58, 0.66, 0.86, 24);
-    // Balustrade vertical posts
-    const balustradeStart = verts.length - 48;
+    // --- Layer 2: Upper Balustrade & Cornice (y: 0.58 to 0.66) ---
+    addCylinder(0.58, 0.66, 0.86, 24, 2);
+    const balustradeStart = rawVerts.length - 48;
     for (let i = 0; i < 24; i += 2) {
-      edg.push([balustradeStart + i, balustradeStart + 24 + i]);
+      edges.push([balustradeStart + i, balustradeStart + 24 + i]);
     }
 
-    // 4. Ribbed Dome Structure (y = 0.66 to 1.38)
+    // --- Layer 3: Ribbed Dome Structure (y: 0.66 to 1.38) ---
     const domeRings = 7;
     const domeRingInfos = [];
     for (let k = 0; k <= domeRings; k++) {
@@ -139,45 +146,46 @@
       const domeY = 0.66 + 0.72 * Math.sin(t * (Math.PI / 2));
       const domeRadius = 0.82 * Math.cos(t * (Math.PI / 2));
       const effectiveR = Math.max(domeRadius, 0.20);
-      const startIdx = addRing(domeY, effectiveR, 16);
-      domeRingInfos.push({ y: domeY, radius: effectiveR, startIdx });
+      const startIdx = addRing(domeY, effectiveR, 16, 3);
+      domeRingInfos.push({ startIdx });
     }
 
-    // Vertical Meridian Ribs
+    // 16 Vertical Meridian Ribs
     for (let i = 0; i < 16; i++) {
       for (let k = 0; k < domeRings; k++) {
         const u = domeRingInfos[k].startIdx + i;
         const v = domeRingInfos[k + 1].startIdx + i;
-        edg.push([u, v]);
+        edges.push([u, v]);
       }
     }
 
-    // 5. Cupola / Lantern (y = 1.38 to 1.72, radius = 0.20)
-    addCylinder(1.38, 1.72, 0.20, 8);
+    // --- Layer 4: Cupola / Lantern & Finial (y: 1.38 to 2.08) ---
+    addCylinder(1.38, 1.72, 0.20, 8, 4);
 
-    // Cupola Roof Cone Apex
-    const apexIdx = verts.length;
-    verts.push([0.0, 1.90, 0.0]);
-    const lanternTopStart = verts.length - 9; // Top ring of lantern
+    // Lantern Roof Cone Apex
+    const apexIdx = addVertex(0.0, 1.90, 0.0, 4);
+    const lanternTopStart = rawVerts.length - 10;
     for (let i = 0; i < 8; i++) {
-      edg.push([lanternTopStart + i, apexIdx]);
+      edges.push([lanternTopStart + i, apexIdx]);
     }
 
-    // Apex Finial / Cross
-    const finialStart = verts.length;
-    verts.push([0.0, 1.90, 0.0]);
-    verts.push([0.0, 2.08, 0.0]);
-    verts.push([-0.07, 2.00, 0.0]);
-    verts.push([0.07, 2.00, 0.0]);
-    edg.push([finialStart, finialStart + 1]);
-    edg.push([finialStart + 2, finialStart + 3]);
+    // Apex Finial Cross
+    const f0 = addVertex(0.0, 1.90, 0.0, 4);
+    const f1 = addVertex(0.0, 2.08, 0.0, 4);
+    const f2 = addVertex(-0.07, 2.00, 0.0, 4);
+    const f3 = addVertex(0.07, 2.00, 0.0, 4);
+    edges.push([f0, f1]);
+    edges.push([f2, f3]);
 
-    return { verts, edg };
+    return { verts: rawVerts, edges };
   }
 
-  const model3D = buildRadcliffeCamera3D();
-  const vertices = model3D.verts;
-  const edges = model3D.edg;
+  const model = buildRadcliffeCameraModel();
+  const vertices = model.verts;
+  const edges = model.edges;
+
+  // Cycle Parameters
+  const CYCLE_DURATION = 18.0; // Seconds per complete continuous 4-phase loop
 
   // State
   let width = 0;
@@ -186,13 +194,14 @@
   let isRunning = true;
   let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Upright rotation around vertical Y-axis
+  // Continuous rotation around vertical Y-axis
   let angleY = 0.45;
+  let totalElapsed = 0;
 
-  // Drag interaction velocity
+  // Touch drag
   let isDragging = false;
   let lastMouseX = 0;
-  let dragVelocityY = 0;
+  let dragVelocity = 0;
 
   function resize() {
     if (!container) return;
@@ -210,7 +219,93 @@
 
   window.addEventListener('resize', resize);
 
-  // Rotate point around vertical Y-axis (keeps building upright)
+  // Compute 4-Phase Transformation for a given vertex
+  function computeVertexTransform(vObj, tau) {
+    const v0 = vObj.pos;
+    const layer = vObj.layer;
+    const phi0 = vObj.phi;
+    const r0 = vObj.r;
+    const y0 = vObj.y;
+
+    // Fixed Outer Boundary Expansion Limits per Layer
+    let drMax = 0;
+    let dyMax = 0;
+    if (layer === 0) { drMax = 0.38; dyMax = -0.28; }
+    else if (layer === 1) { drMax = 0.55; dyMax = -0.06; }
+    else if (layer === 2) { drMax = 0.50; dyMax = 0.16; }
+    else if (layer === 3) { drMax = 0.42; dyMax = 0.48; }
+    else if (layer === 4) { drMax = 0.12; dyMax = 0.82; }
+
+    const rBound = r0 * (1 + drMax);
+    const yBound = y0 + dyMax;
+
+    // Folded Target Coordinates at the inflection of Phase 3
+    let p3R = rBound;
+    let p3Y = yBound;
+    let p3Phi = phi0;
+
+    if (layer === 3) {
+      // Dome: iris flower inward curl
+      p3R = rBound * 0.42;
+      p3Y = yBound - 0.38;
+      p3Phi = phi0 + 0.65;
+    } else if (layer === 1) {
+      // Drum & Columns: radial inward tilt
+      p3R = rBound * 0.48;
+      p3Y = yBound + 0.18;
+      p3Phi = phi0 + 0.45;
+    } else if (layer === 4) {
+      // Lantern: core descent through dome iris
+      p3R = rBound * 0.75;
+      p3Y = yBound - 1.05;
+      p3Phi = phi0 - 0.30;
+    } else if (layer === 0) {
+      // Base: compact upward contraction
+      p3R = rBound * 0.62;
+      p3Y = yBound + 0.28;
+      p3Phi = phi0 + 0.22;
+    } else {
+      // Balustrade
+      p3R = rBound * 0.55;
+      p3Y = yBound - 0.12;
+      p3Phi = phi0 - 0.40;
+    }
+
+    // Quadrant Partition:
+    if (tau < 0.25) {
+      // 1. Assembled building rotates slowly around vertical axis
+      return [v0[0], v0[1], v0[2]];
+    } else if (tau < 0.50) {
+      // 2. Architectural layers separate and expand toward fixed outer boundary
+      const p = (tau - 0.25) / 0.25;
+      const E = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
+
+      const curR = r0 * (1 + drMax * E);
+      const curY = y0 + dyMax * E;
+      return [curR * Math.cos(phi0), curY, curR * Math.sin(phi0)];
+    } else if (tau < 0.75) {
+      // 3. At outer boundary, components turn inward and fold toward the centre
+      const p = (tau - 0.50) / 0.25;
+      const F = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
+
+      // Coordinated folding motion: pitch tilt around tangent + radial contraction + twist
+      const curR = rBound + (p3R - rBound) * F;
+      const curY = yBound + (p3Y - yBound) * F;
+      const curPhi = phi0 + (p3Phi - phi0) * F;
+      return [curR * Math.cos(curPhi), curY, curR * Math.sin(curPhi)];
+    } else {
+      // 4. Unfold and reassemble into recognisable building (seamless loop)
+      const p = (tau - 0.75) / 0.25;
+      const U = 0.5 * (1 - Math.cos(p * Math.PI)); // Smooth cosine ease
+
+      const curR = p3R + (r0 - p3R) * U;
+      const curY = p3Y + (y0 - p3Y) * U;
+      const curPhi = p3Phi + (phi0 - p3Phi) * U;
+      return [curR * Math.cos(curPhi), curY, curR * Math.sin(curPhi)];
+    }
+  }
+
+  // 3D Rotations
   function rotateY(v, theta) {
     const cos = Math.cos(theta);
     const sin = Math.sin(theta);
@@ -221,7 +316,6 @@
     ];
   }
 
-  // Pitch tilt for slightly elevated camera viewpoint (~18.5 degrees)
   function pitchTilt(v, phi) {
     const cos = Math.cos(phi);
     const sin = Math.sin(phi);
@@ -232,37 +326,40 @@
     ];
   }
 
-  // Project 3D point to 2D screen coordinates with slight perspective depth
   function project3Dto2D(p3, scale, centerX, centerY) {
-    const cameraDist = 4.2;
+    const cameraDist = 4.4;
     const factor = scale / (cameraDist - p3[2]);
     const x = centerX + p3[0] * factor;
-    const y = centerY - p3[1] * factor; // Flip Y for screen space
+    const y = centerY - p3[1] * factor;
     return [x, y];
   }
 
-  function render() {
+  function render(forceStatic = false) {
     if (!width || !height) return;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Camera Parameters: Slightly elevated viewpoint (~18.5 deg)
-    const pitchAngle = 0.32;
-    const scale = Math.min(width, height) * 0.40;
-
-    // Desktop vs Mobile positioning: center offset
+    const pitchAngle = 0.32; // Elevated viewpoint (~18.5 deg)
     const isMobile = width < 640;
-    const centerX = isMobile ? width * 0.5 : width * 0.58;
-    const centerY = isMobile ? height * 0.55 : height * 0.56;
+    const scale = Math.min(width, height) * (isMobile ? 0.32 : 0.36);
+
+    const centerX = isMobile ? width * 0.50 : width * 0.56;
+    const centerY = isMobile ? height * 0.54 : height * 0.55;
+
+    // Normalised cycle position tau in [0, 1)
+    const tau = isReducedMotion || forceStatic
+      ? 0.0 // Canonical assembled view for reduced motion
+      : (totalElapsed % CYCLE_DURATION) / CYCLE_DURATION;
 
     const projected2D = [];
     const projected3D = [];
 
     for (let i = 0; i < vertices.length; i++) {
-      let v = vertices[i];
-      // 1. Rotate upright around vertical Y-axis
+      // 1. Compute layer transformation (expansion, inward folding, reassembly)
+      let v = computeVertexTransform(vertices[i], tau);
+      // 2. Rotate upright around vertical Y-axis
       v = rotateY(v, angleY);
-      // 2. Apply elevated camera pitch tilt
+      // 3. Elevated camera pitch tilt for architectural depth
       v = pitchTilt(v, pitchAngle);
 
       projected3D.push(v);
@@ -271,22 +368,22 @@
     }
 
     const strokeColor = '#FF2600';
-    const strokeFaint = 'rgba(255, 38, 0, 0.18)';
+    const strokeFaint = 'rgba(255, 38, 0, 0.16)';
 
     // Ground & Structural Datum Circles
     ctx.beginPath();
     ctx.strokeStyle = strokeFaint;
     ctx.lineWidth = 1;
-    ctx.arc(centerX, centerY + scale * 0.28, scale * 0.92, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY + scale * 0.28, scale * 0.90, 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.setLineDash([3, 4]);
-    ctx.arc(centerX, centerY + scale * 0.28, scale * 0.55, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY + scale * 0.28, scale * 0.52, 0, Math.PI * 2);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Draw Primary Architectural 3D Edges
+    // Draw Architectural Wireframe Edges
     ctx.beginPath();
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 1.25;
@@ -304,7 +401,7 @@
     }
     ctx.stroke();
 
-    // Draw Node Markers on Key Architectural Vertices
+    // Node Markers on Key Structural Vertices
     for (let i = 0; i < projected2D.length; i += 4) {
       const [x, y] = projected2D[i];
       const nodeSize = projected3D[i][2] > 0 ? 3 : 2;
@@ -313,7 +410,7 @@
     }
   }
 
-  // Animation Loop: Steady, upright rotation
+  // Animation Loop
   let lastTimestamp = 0;
 
   function step(timestamp) {
@@ -322,12 +419,13 @@
     lastTimestamp = timestamp;
 
     if (isRunning && !isReducedMotion) {
-      // Slow, steady rotation around vertical Y-axis
-      angleY += 0.18 * delta;
+      totalElapsed += delta;
+      // Steady rotation around vertical Y-axis continues uninterrupted
+      angleY += 0.20 * delta;
 
       if (!isDragging) {
-        angleY += dragVelocityY * 0.08;
-        dragVelocityY *= 0.92;
+        angleY += dragVelocity * 0.08;
+        dragVelocity *= 0.92;
       }
 
       render();
@@ -336,7 +434,7 @@
     requestAnimationFrame(step);
   }
 
-  // Pointer & Touch handling (unblocked vertical page scrolling)
+  // Touch and Mouse Drag Interaction (non-blocking touch pan-y)
   if (container) {
     container.addEventListener('pointerdown', (e) => {
       isDragging = true;
@@ -351,10 +449,10 @@
       const dx = e.clientX - lastMouseX;
       lastMouseX = e.clientX;
 
-      dragVelocityY = dx * 0.012;
-      angleY += dragVelocityY;
+      dragVelocity = dx * 0.012;
+      angleY += dragVelocity;
 
-      if (isReducedMotion) render();
+      if (isReducedMotion) render(true);
     }, { passive: true });
 
     const stopDrag = (e) => {
@@ -380,7 +478,7 @@
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   motionQuery.addEventListener('change', (e) => {
     isReducedMotion = e.matches;
-    render(true);
+    render(isReducedMotion);
   });
 
   resize();

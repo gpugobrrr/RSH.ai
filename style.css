@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    BUILD SOMETHING — Flat Acid-Yellow & Red-Orange Minimalist Poster
    With Static Architectural Radcliffe Camera SVG & OXFORD, UK Location Label
    ========================================================================== */
@@ -83,7 +83,7 @@ body.broadcast-body {
            max(1.25rem, env(safe-area-inset-left));
 }
 
-/* Fullscreen 4D Wireframe Canvas */
+/* Bounded 3D Wireframe Canvas Container */
 .wireframe-container {
   position: absolute;
   inset: 0;
@@ -92,6 +92,7 @@ body.broadcast-body {
   z-index: 1;
   pointer-events: auto;
   touch-action: pan-y;
+  overflow: hidden; /* Keep entire movement inside bounded animation area */
   cursor: grab;
 }
 
@@ -100,28 +101,6 @@ body.broadcast-body {
 }
 
 #wireframe-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Static Architectural Radcliffe Camera SVG Line Drawing
-   - Integrated into current geometry
-   - Partially cropped at the lower-right edge on desktop
-   - Never overlaps body copy or action items
-*/
-.radcliffe-container {
-  position: absolute;
-  bottom: -6%;
-  right: -4%;
-  width: clamp(280px, 32vw, 520px);
-  height: clamp(280px, 32vw, 520px);
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.88;
-}
-
-.radcliffe-svg {
   width: 100%;
   height: 100%;
   display: block;
@@ -211,7 +190,7 @@ body.broadcast-body {
   color: var(--color-bg);
 }
 
-/* Mobile Adaptation: Reposition Radcliffe Camera beneath main copy */
+/* Mobile Adaptation */
 @media (max-width: 640px) {
   .poster-headline {
     font-size: clamp(2.9rem, 16vw, 6.5rem);
@@ -220,16 +199,6 @@ body.broadcast-body {
 
   .poster-headline .row-2 {
     margin-left: clamp(0.2rem, 2vw, 1rem);
-  }
-
-  .radcliffe-container {
-    position: relative;
-    bottom: auto;
-    right: auto;
-    width: min(230px, 58vw);
-    height: min(230px, 58vw);
-    margin: 0.5rem auto 0 auto;
-    opacity: 0.82;
   }
 }
 
