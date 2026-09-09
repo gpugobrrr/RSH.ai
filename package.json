@@ -1,0 +1,9 @@
+﻿{
+  "name": "nfrstct-high-precision-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NFRSTCT — High Precision Lab landing graphic and broadcast page",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
