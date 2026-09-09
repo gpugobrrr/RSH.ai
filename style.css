@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    BUILD SOMETHING — Flat Acid-Yellow & Red-Orange Minimalist Poster
    ========================================================================== */
 
@@ -144,7 +144,7 @@ body.broadcast-body {
   transform: scaleY(1.02);
 }
 
-/* Ultra-Minimalist Contact Footer with Single Top Line */
+/* Ultra-Minimalist Contact Footer with Single Top Line & Bottom Right Alignment */
 .contact-block {
   position: relative;
   z-index: 10;
@@ -154,7 +154,7 @@ body.broadcast-body {
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end; /* Bottom Right */
   width: 100%;
 }
 
@@ -168,6 +168,7 @@ body.broadcast-body {
   padding: 0 0.5rem;
   display: inline-flex;
   align-items: center;
+  margin-left: auto; /* Bottom Right alignment */
   transition: background-color 0.15s ease, color 0.15s ease;
   touch-action: manipulation;
 }
