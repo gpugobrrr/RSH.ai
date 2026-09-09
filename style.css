@@ -1,6 +1,6 @@
 ﻿/* ==========================================================================
    BUILD SOMETHING — Flat Acid-Yellow & Red-Orange Minimalist Poster
-   Middle Aligned Content with Email Aligned Right with Text
+   With Static Architectural Radcliffe Camera SVG & OXFORD, UK Location Label
    ========================================================================== */
 
 :root {
@@ -83,7 +83,7 @@ body.broadcast-body {
            max(1.25rem, env(safe-area-inset-left));
 }
 
-/* Fullscreen Wireframe Canvas */
+/* Fullscreen 4D Wireframe Canvas */
 .wireframe-container {
   position: absolute;
   inset: 0;
@@ -105,6 +105,28 @@ body.broadcast-body {
   display: block;
 }
 
+/* Static Architectural Radcliffe Camera SVG Line Drawing
+   - Integrated into current geometry
+   - Partially cropped at the lower-right edge on desktop
+   - Never overlaps body copy or action items
+*/
+.radcliffe-container {
+  position: absolute;
+  bottom: -6%;
+  right: -4%;
+  width: clamp(280px, 32vw, 520px);
+  height: clamp(280px, 32vw, 520px);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.88;
+}
+
+.radcliffe-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* Poster Content: Middle Aligned */
 .poster-content {
   position: relative;
@@ -113,7 +135,7 @@ body.broadcast-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: auto 0; /* Middle vertically aligned */
+  margin: auto 0;
   pointer-events: none;
 }
 
@@ -145,18 +167,29 @@ body.broadcast-body {
   transform: scaleY(1.02);
 }
 
-/* Contact Block: Line Over Top & Aligned Right with Text */
+/* Contact Block: Line Over Top, OXFORD, UK on Left, Email Aligned Right with Text */
 .contact-block {
   position: relative;
   z-index: 10;
-  border-top: var(--border-thick); /* Line over the top */
+  border-top: var(--border-thick);
   padding-top: 0.75rem;
   margin-top: 1.25rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Aligned with right of text */
+  justify-content: space-between;
   width: 100%;
   pointer-events: auto;
+}
+
+.location-label {
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.08em;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .contact-email {
@@ -165,11 +198,10 @@ body.broadcast-body {
   font-weight: 700;
   color: var(--color-primary);
   text-decoration: none;
-  min-height: 44px; /* Touch target >= 44px */
+  min-height: 44px;
   padding: 0 0.5rem;
   display: inline-flex;
   align-items: center;
-  margin-left: auto; /* Right alignment */
   transition: background-color 0.15s ease, color 0.15s ease;
   touch-action: manipulation;
 }
@@ -179,8 +211,8 @@ body.broadcast-body {
   color: var(--color-bg);
 }
 
-/* Mobile Screen Adaptation */
-@media (max-width: 480px) {
+/* Mobile Adaptation: Reposition Radcliffe Camera beneath main copy */
+@media (max-width: 640px) {
   .poster-headline {
     font-size: clamp(2.9rem, 16vw, 6.5rem);
     letter-spacing: -0.04em;
@@ -188,6 +220,16 @@ body.broadcast-body {
 
   .poster-headline .row-2 {
     margin-left: clamp(0.2rem, 2vw, 1rem);
+  }
+
+  .radcliffe-container {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: min(230px, 58vw);
+    height: min(230px, 58vw);
+    margin: 0.5rem auto 0 auto;
+    opacity: 0.82;
   }
 }
 
