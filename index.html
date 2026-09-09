@@ -67,23 +67,35 @@
           </div>
 
           <div class="grid-col pillars-col">
-            <div class="col-header-marker" aria-hidden="true">
+            <div class="col-header-marker">
               <span class="marker-code">// 02</span>
-              <span class="marker-title">DISCIPLINE</span>
+              <span class="marker-title">DISCIPLINE & BENCHMARK</span>
             </div>
             <div class="pillars-list" role="list">
-              <div class="pillar-item" role="listitem">
+              <button type="button" class="pillar-item pillar-btn active" data-preset="TESSERACT" aria-label="Activate Tesseract 4D benchmark mode">
                 <span class="pillar-num" aria-hidden="true">01</span>
                 <span class="pillar-term">EXPERIMENT</span>
-              </div>
-              <div class="pillar-item" role="listitem">
+                <span class="pillar-tag">[4D-HYPERCUBE]</span>
+              </button>
+              <button type="button" class="pillar-item pillar-btn" data-preset="STELLATED" aria-label="Activate Stellated Octahedron benchmark mode">
                 <span class="pillar-num" aria-hidden="true">02</span>
                 <span class="pillar-term">BUILD</span>
-              </div>
-              <div class="pillar-item" role="listitem">
+                <span class="pillar-tag">[STELLATED]</span>
+              </button>
+              <button type="button" class="pillar-item pillar-btn" data-preset="TOROIDAL" aria-label="Activate Toroidal Geodesic benchmark mode">
                 <span class="pillar-num" aria-hidden="true">03</span>
                 <span class="pillar-term">DEMONSTRATE</span>
+                <span class="pillar-tag">[TOROIDAL]</span>
+              </button>
+            </div>
+            
+            <div class="bench-telemetry-panel">
+              <div class="telemetry-readout" id="bench-readout" aria-live="polite">
+                <span>SPEC: TESSERACT 4D</span> // <span id="telemetry-fps">60 FPS</span> // <span id="telemetry-verts">16 VERTS</span>
               </div>
+              <button type="button" class="btn-copy-spec" id="btn-copy-spec" aria-label="Copy active mathematical geometry specification to clipboard">
+                <span id="copy-spec-label">EXPORT MATRIX SPEC</span>
+              </button>
             </div>
           </div>
 

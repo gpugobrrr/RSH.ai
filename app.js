@@ -1,6 +1,6 @@
 ﻿/**
  * NFRSTCT — High Precision Lab
- * Application Dispatch & Interaction Controller
+ * Application Dispatch & Benchmark Controller
  */
 
 (function () {
@@ -8,13 +8,8 @@
 
   /* ==========================================================================
      CONFIGURATION & ENDPOINT NOTICE
-     ==========================================================================
-     The production registration destination endpoint is currently unset.
-     To connect this landing broadcast to your live infrastructure:
-     1. Set `ACTION_ENDPOINT` to your POST handler URL (e.g. '/api/register' or your CRM webhook).
-     2. Remove or comment the local staging simulation block below.
      ========================================================================== */
-  const ACTION_ENDPOINT = null; // Production endpoint not yet configured
+  const ACTION_ENDPOINT = null; // Production registration endpoint URL
 
   // DOM Elements
   const registerTrigger = document.getElementById('register-trigger');
@@ -34,6 +29,14 @@
   const nameError = document.getElementById('name-error');
   const emailError = document.getElementById('email-error');
   const focusError = document.getElementById('focus-error');
+
+  // Interactive Benchmark Elements
+  const pillarBtns = document.querySelectorAll('.pillar-btn');
+  const benchReadout = document.getElementById('bench-readout');
+  const telemetryFps = document.getElementById('telemetry-fps');
+  const telemetryVerts = document.getElementById('telemetry-verts');
+  const btnCopySpec = document.getElementById('btn-copy-spec');
+  const copySpecLabel = document.getElementById('copy-spec-label');
 
   // Open Dialog
   function openDialog() {
@@ -58,7 +61,6 @@
     if (dialogCloseBtn) dialogCloseBtn.addEventListener('click', closeDialog);
     if (dialogCancelBtn) dialogCancelBtn.addEventListener('click', closeDialog);
 
-    // Close when clicking outside dialog interior (backdrop click)
     registerDialog.addEventListener('click', (event) => {
       const rect = registerDialog.getBoundingClientRect();
       const isInDialog = (
@@ -72,7 +74,6 @@
       }
     });
 
-    // Handle Escape key
     registerDialog.addEventListener('cancel', () => {
       registerTrigger.setAttribute('aria-expanded', 'false');
       registerTrigger.focus();
@@ -83,18 +84,15 @@
   function validateForm() {
     let isValid = true;
 
-    // Reset error messages
     if (nameError) nameError.textContent = '';
     if (emailError) emailError.textContent = '';
     if (focusError) focusError.textContent = '';
 
-    // Validate Name
     if (!nameInput.value.trim()) {
       if (nameError) nameError.textContent = 'ERR // NAME OR CALLSIGN IS REQUIRED';
       isValid = false;
     }
 
-    // Validate Email
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailInput.value.trim()) {
       if (emailError) emailError.textContent = 'ERR // COMMUNICATION ENDPOINT (EMAIL) IS REQUIRED';
@@ -104,7 +102,6 @@
       isValid = false;
     }
 
-    // Validate Focus
     if (!focusInput.value) {
       if (focusError) focusError.textContent = 'ERR // PLEASE SPECIFY YOUR PRIMARY DISCIPLINE';
       isValid = false;
@@ -128,7 +125,6 @@
       };
 
       if (ACTION_ENDPOINT) {
-        // Production submission flow if endpoint is configured
         fetch(ACTION_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -141,7 +137,6 @@
           showDispatchOutput(payload, 'NETWORK DISPATCH FAILURE: ' + err.message);
         });
       } else {
-        // Honest Staging Feedback (No fake submission claim)
         showDispatchOutput(payload, 'STAGING BUFFER: NO PRODUCTION ENDPOINT CONFIGURED');
       }
     });
@@ -175,9 +170,8 @@
     });
   }
 
-  // Manual Motion Toggle Control
+  // Motion Toggle Control
   if (motionToggle) {
-    // Initial state query
     const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let manualPause = reducedMotionQuery.matches;
 
@@ -197,6 +191,73 @@
       if (window.NFRSTCT_WIREFRAME) {
         window.NFRSTCT_WIREFRAME.setReducedMotion(manualPause);
       }
+    });
+  }
+
+  /* ==========================================================================
+     Interactive Benchmark Controller
+     ========================================================================== */
+  if (pillarBtns.length > 0) {
+    pillarBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        pillarBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const presetKey = btn.getAttribute('data-preset');
+        if (window.NFRSTCT_WIREFRAME) {
+          const presetName = window.NFRSTCT_WIREFRAME.setPreset(presetKey);
+          updateBenchReadout();
+        }
+      });
+    });
+  }
+
+  function updateBenchReadout() {
+    if (!window.NFRSTCT_WIREFRAME) return;
+    const telem = window.NFRSTCT_WIREFRAME.getTelemetry();
+
+    if (telemetryFps) telemetryFps.textContent = `${telem.fps} FPS`;
+    if (telemetryVerts) telemetryVerts.textContent = `${telem.vertices} VERTS`;
+  }
+
+  // Poll live telemetry metrics every 600ms
+  setInterval(updateBenchReadout, 600);
+
+  // Copy Spec matrix parameters to clipboard
+  if (btnCopySpec) {
+    btnCopySpec.addEventListener('click', () => {
+      if (!window.NFRSTCT_WIREFRAME) return;
+      const telem = window.NFRSTCT_WIREFRAME.getTelemetry();
+
+      const jsonSpec = JSON.stringify({
+        sys: "SYS.NFRSTCT // HIGH PRECISION LAB",
+        spec: telem.preset,
+        metrics: {
+          fps: telem.fps,
+          vertices: telem.vertices,
+          edges: telem.edges,
+          chords: telem.chords,
+          speed: telem.speed
+        },
+        so4MatrixAngles: telem.angles,
+        timestamp: new Date().toISOString()
+      }, null, 2);
+
+      navigator.clipboard.writeText(jsonSpec).then(() => {
+        if (copySpecLabel) {
+          const origText = copySpecLabel.textContent;
+          copySpecLabel.textContent = 'MATRIX SPEC COPIED ✓';
+          btnCopySpec.style.backgroundColor = 'var(--color-primary)';
+          btnCopySpec.style.color = 'var(--color-bg)';
+          setTimeout(() => {
+            copySpecLabel.textContent = origText;
+            btnCopySpec.style.backgroundColor = 'transparent';
+            btnCopySpec.style.color = 'var(--color-primary)';
+          }, 2000);
+        }
+      }).catch(() => {
+        if (copySpecLabel) copySpecLabel.textContent = 'SPEC READOUT READY';
+      });
     });
   }
 

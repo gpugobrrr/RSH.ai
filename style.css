@@ -343,7 +343,7 @@ body.broadcast-body {
   margin-top: auto;
 }
 
-/* Column 2: Pillars List */
+/* Column 2: Pillars & Interactive Benchmark Controls */
 .pillars-list {
   display: flex;
   flex-direction: column;
@@ -352,29 +352,96 @@ body.broadcast-body {
 
 .pillar-item {
   display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   border-bottom: 1px dashed rgba(255, 38, 0, 0.4);
-  padding-bottom: 0.4rem;
+  padding: 0.5rem 0.65rem;
+  background: transparent;
+  border-left: 3px solid transparent;
+  color: var(--color-primary);
+  text-align: left;
+  width: 100%;
+  min-height: 44px; /* Touch target >= 44px */
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-left-color 0.15s ease;
+  touch-action: manipulation;
 }
 
-.pillar-item:last-child {
-  border-bottom: none;
+.pillar-item.active, .pillar-item:hover {
+  background-color: rgba(255, 38, 0, 0.08);
+  border-left-color: var(--color-primary);
+}
+
+.pillar-item:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .pillar-num {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .pillar-term {
   font-family: var(--font-utility);
-  font-size: clamp(1.15rem, 3.5vw, 1.65rem); /* Minimum ~18.4px */
+  font-size: clamp(1.1rem, 3.2vw, 1.55rem);
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
+  flex: 1;
+}
+
+.pillar-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* Interactive Telemetry Panel */
+.bench-telemetry-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: var(--border-hairline);
+}
+
+.telemetry-readout {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background-color: rgba(255, 38, 0, 0.06);
+  padding: 0.45rem 0.6rem;
+  border: var(--border-hairline);
+}
+
+.btn-copy-spec {
+  appearance: none;
+  background-color: transparent;
+  border: var(--border-hairline);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-height: 44px; /* Touch target >= 44px */
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+}
+
+.btn-copy-spec:hover, .btn-copy-spec:active {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
 }
 
 /* Column 3: Primary Action CTA
