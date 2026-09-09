@@ -147,7 +147,7 @@ body.broadcast-body {
   transform: scaleY(1.02);
 }
 
-/* Contact Block: Line Over Top, OXFORD, UK on Left, Email Aligned Right with Text */
+/* Contact Block: Line Over Top, lab@RSH.ai on Left, oxford Aligned Under G on Right */
 .contact-block {
   position: relative;
   z-index: 10;
@@ -163,13 +163,17 @@ body.broadcast-body {
 
 .location-label {
   font-family: var(--font-mono);
-  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-size: clamp(0.95rem, 2.8vw, 1.35rem);
   font-weight: 700;
   color: var(--color-primary);
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
+  text-transform: lowercase;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  user-select: none;
 }
 
 .contact-email {
