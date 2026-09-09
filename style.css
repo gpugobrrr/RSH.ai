@@ -1,7 +1,5 @@
 ﻿/* ==========================================================================
-   BUILD SOMETHING — NFRSTCT HIGH PRECISION LAB
-   Aesthetic Specification: Flat Acid-Yellow & Red-Orange Poster
-   Vertical Mobile Adaptation with Technical Contact Block
+   BUILD SOMETHING — Flat Acid-Yellow & Red-Orange Minimalist Poster
    ========================================================================== */
 
 :root {
@@ -10,7 +8,6 @@
   --font-display: 'Syne', 'Impact', 'Arial Black', -apple-system, sans-serif;
   --font-mono: 'Space Mono', 'Courier New', monospace;
   --border-thick: 2px solid var(--color-primary);
-  --border-hairline: 1px solid var(--color-primary);
 }
 
 *, *::before, *::after {
@@ -68,7 +65,7 @@ body.broadcast-body {
 .reg-cross.bottom-left { bottom: max(0.85rem, env(safe-area-inset-bottom)); left: max(0.85rem, env(safe-area-inset-left)); }
 .reg-cross.bottom-right { bottom: max(0.85rem, env(safe-area-inset-bottom)); right: max(0.85rem, env(safe-area-inset-right)); }
 
-/* Poster Stage: Vertical Flex Layout on Mobile */
+/* Poster Stage: Vertical Layout */
 .poster-stage {
   width: 100%;
   min-height: 100vh;
@@ -114,7 +111,7 @@ body.broadcast-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   margin-bottom: auto;
   pointer-events: none;
 }
@@ -147,81 +144,40 @@ body.broadcast-body {
   transform: scaleY(1.02);
 }
 
-/* Technical Contact Details Block */
+/* Ultra-Minimalist Contact Footer with Single Top Line */
 .contact-block {
   position: relative;
   z-index: 10;
-  background-color: var(--color-bg); /* Opaque solid background barrier */
-  border-top: var(--border-thick);
-  padding-top: 0.85rem;
+  background-color: var(--color-bg);
+  border-top: var(--border-thick); /* Line over the top */
+  padding-top: 0.75rem;
   margin-top: 1.5rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  width: 100%;
-  font-family: var(--font-mono);
-  font-size: clamp(0.75rem, 2.2vw, 0.95rem);
-  font-weight: 700;
-}
-
-@media (min-width: 640px) {
-  .contact-block {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
-}
-
-.contact-item {
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
 }
 
-.contact-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
-}
-
-.contact-link {
+.contact-email {
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 2.8vw, 1.25rem);
+  font-weight: 700;
   color: var(--color-primary);
   text-decoration: none;
-  border-bottom: 2px solid var(--color-primary);
-  padding: 0.2rem 0;
   min-height: 44px; /* Touch target >= 44px */
+  padding: 0 0.5rem;
   display: inline-flex;
   align-items: center;
   transition: background-color 0.15s ease, color 0.15s ease;
   touch-action: manipulation;
 }
 
-.contact-link:hover, .contact-link:active {
+.contact-email:hover, .contact-email:active {
   background-color: var(--color-primary);
   color: var(--color-bg);
 }
 
-.contact-val {
-  letter-spacing: 0.05em;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.contact-divider {
-  display: none;
-  opacity: 0.4;
-}
-
-@media (min-width: 640px) {
-  .contact-divider {
-    display: inline-block;
-  }
-}
-
-/* Screen Width & Mobile Adaptation */
+/* Mobile Screen Adaptation */
 @media (max-width: 480px) {
   .poster-headline {
     font-size: clamp(2.9rem, 16vw, 6.5rem);
