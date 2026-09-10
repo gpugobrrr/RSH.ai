@@ -4,11 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>BUILD SOMETHING</title>
-  <meta name="description" content="BUILD SOMETHING — NFRSTCT High Precision Lab. lab@RSH.ai">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@700&family=Syne:wght@900&display=swap" rel="stylesheet">
+  <meta name="description" content="BUILD SOMETHING — High Precision Lab. lab@RSH.ai">
   
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -16,50 +12,69 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <meta name="theme-color" content="#EEFF04">
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Syne:wght@900&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="broadcast-body">
-  <!-- Risograph Texture Overlay -->
-  <svg class="texture-filter-defs" aria-hidden="true" width="0" height="0">
-    <defs>
-      <filter id="print-grain">
-        <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" result="noise" />
-        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.08 0" />
-      </filter>
-    </defs>
-  </svg>
+<body>
+  <!-- Faded Oxford Skyline (Fixed Background, Static) -->
+  <div class="skyline-backdrop" aria-hidden="true">
+    <img src="skyline.png" srcset="skyline.png 1x, skyline@2x.png 2x" class="skyline-img" alt="">
+  </div>
 
-  <div class="print-grain-overlay" aria-hidden="true"></div>
+  <!-- Contact Email -->
+  <a href="mailto:lab@RSH.ai" class="contact-email">lab@RSH.ai</a>
 
-  <main class="poster-stage">
-    <!-- Corner Registration Crosses (+) -->
-    <div class="reg-cross top-left" aria-hidden="true">+</div>
-    <div class="reg-cross top-right" aria-hidden="true">+</div>
-
-    <!-- Oxford-London Connection Editorial Plate -->
-    <figure class="oxf-ldn-plate" aria-label="Oxford-London Connection: Oxford scholars in sub fusc against London architectural skyline">
-      <img src="oxford-london.jpg" alt="Oxford scholars in sub fusc against London architectural skyline featuring The Shard, St Paul's Cathedral, and Elizabeth Tower" class="oxf-ldn-img">
-    </figure>
-
-    <!-- Oxford Architectural Skyline Graphic -->
-    <div class="skyline-container" id="skyline-mount" aria-hidden="true">
-      <img src="skyline.png" srcset="skyline.png 1x, skyline@2x.png 2x" alt="Oxford Architectural Skyline" class="skyline-graphic">
+  <!-- Tiled Vertical Scrolling Stream -->
+  <main class="stream-container" id="stream-container">
+    <div class="stream-group" id="group-a">
+      <div class="tile-unit">
+        <h1 class="tile-headline">
+          <span class="word-1">BUILD</span>
+          <span class="word-2">SOMETHING</span>
+        </h1>
+      </div>
+      <div class="tile-unit" aria-hidden="true">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit" aria-hidden="true">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit" aria-hidden="true">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit" aria-hidden="true">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
     </div>
-
-    <!-- Middle-Aligned Poster Content & Typography -->
-    <div class="poster-content">
-      <h1 class="poster-headline" aria-label="BUILD SOMETHING">
-        <span class="row-1">BUILD</span>
-        <span class="row-2">SOMETHING</span>
-      </h1>
+    <div class="stream-group" id="group-b" aria-hidden="true">
+      <div class="tile-unit">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
+      <div class="tile-unit">
+        <span class="word-1">BUILD</span>
+        <span class="word-2">SOMETHING</span>
+      </div>
     </div>
-
-    <!-- Bottom-Right Professional Email Contact -->
-    <a href="mailto:lab@RSH.ai" class="contact-email">lab@RSH.ai</a>
-
-    <!-- Bottom Corner Crosses -->
-    <div class="reg-cross bottom-left" aria-hidden="true">+</div>
-    <div class="reg-cross bottom-right" aria-hidden="true">+</div>
   </main>
 
   <script src="app.js"></script>

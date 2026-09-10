@@ -1,41 +1,70 @@
 /**
- * BUILD SOMETHING — NFRSTCT HIGH PRECISION LAB
- * Application Controller & Skyline Parallax
+ * BUILD SOMETHING — High Precision Lab
+ * Seamless Continuous Autoscroll & Tiled Typography Stream
  */
 
 (function () {
   'use strict';
 
-  const skyline = document.querySelector('.skyline-graphic');
+  const groupA = document.getElementById('group-a');
+  if (!groupA) return;
+
+  let groupHeight = groupA.offsetHeight;
+
+  function updateHeight() {
+    if (groupA) groupHeight = groupA.offsetHeight;
+  }
+  window.addEventListener('resize', updateHeight, { passive: true });
+
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (prefersReducedMotion.matches) return;
 
-  if (skyline && !prefersReducedMotion.matches) {
-    let targetX = 0;
-    let currentX = 0;
-    let ticking = false;
+  const pixelsPerSecond = 60; // Clean, steady downward scroll
+  let lastTime = performance.now();
+  let isPaused = false;
+  let resumeTimer = null;
 
-    window.addEventListener('pointermove', function (e) {
-      const normX = (e.clientX / window.innerWidth) - 0.5;
-      targetX = normX * -20; // Subtle horizontal parallax
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateParallax);
-      }
-    }, { passive: true });
+  function pauseScroll() {
+    isPaused = true;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      isPaused = false;
+      lastTime = performance.now();
+    }, 1200);
+  }
 
-    function updateParallax() {
-      currentX += (targetX - currentX) * 0.08;
-      const isMobile = window.innerWidth <= 640;
-      const baseY = isMobile ? 0 : -2;
-      skyline.style.transform = `translate3d(${currentX.toFixed(2)}px, ${baseY}%, 0)`;
+  // Allow intuitive manual user scrolling without fighting the autoscroll
+  window.addEventListener('wheel', pauseScroll, { passive: true });
+  window.addEventListener('touchstart', pauseScroll, { passive: true });
+  window.addEventListener('touchmove', pauseScroll, { passive: true });
+  window.addEventListener('pointerdown', pauseScroll, { passive: true });
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Space'].includes(e.code)) {
+      pauseScroll();
+    }
+  }, { passive: true });
 
-      if (Math.abs(targetX - currentX) > 0.05) {
-        requestAnimationFrame(updateParallax);
-      } else {
-        ticking = false;
+  function tick(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.1);
+    lastTime = now;
+
+    if (!isPaused && dt > 0) {
+      window.scrollBy(0, pixelsPerSecond * dt);
+    }
+
+    // Seamless infinite wrap
+    if (groupHeight > 0) {
+      if (window.scrollY >= groupHeight) {
+        window.scrollTo(0, window.scrollY - groupHeight);
+      } else if (window.scrollY <= 0 && isPaused) {
+        window.scrollTo(0, window.scrollY + groupHeight);
       }
     }
+
+    requestAnimationFrame(tick);
   }
+
+  requestAnimationFrame(tick);
 })();
 
 
