@@ -62,16 +62,16 @@ body {
   display: block;
 }
 
-/* Fixed Email Contact */
+/* Fixed Contact Link */
 .contact-email {
   position: fixed;
   bottom: max(1rem, env(safe-area-inset-bottom));
   right: max(1rem, env(safe-area-inset-right));
   z-index: 50;
   font-family: var(--font-sans);
-  font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+  font-size: clamp(0.72rem, 1.25vw, 1rem);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   color: var(--color-primary);
   text-decoration: none;
   background-color: var(--color-bg);
@@ -79,6 +79,7 @@ body {
   transition: background-color 0.15s ease, color 0.15s ease;
   touch-action: manipulation;
   pointer-events: auto;
+  white-space: nowrap;
 }
 
 .contact-email:hover,
@@ -154,8 +155,13 @@ body {
   }
 
   .contact-email {
-    font-size: clamp(0.78rem, 2.8vw, 0.95rem);
+    font-size: clamp(0.62rem, 2.6vw, 0.85rem);
     padding: 0.2rem 0.35rem;
+    white-space: normal;
+    text-align: right;
+    max-width: calc(100vw - 1.2rem);
+    bottom: max(0.6rem, env(safe-area-inset-bottom));
+    right: max(0.6rem, env(safe-area-inset-right));
   }
 
   .skyline-img {
