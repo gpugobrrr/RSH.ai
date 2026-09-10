@@ -1,25 +1,42 @@
 /**
  * BUILD SOMETHING — High Precision Lab
- * Seamless Continuous Autoscroll & Tiled Typography Stream
+ * Downward Scrolling & Seamless Tiled Typography Stream
  */
 
 (function () {
   'use strict';
 
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
   const groupA = document.getElementById('group-a');
   if (!groupA) return;
 
-  let groupHeight = groupA.offsetHeight;
+  let groupHeight = groupA.offsetHeight || 1000;
 
   function updateHeight() {
-    if (groupA) groupHeight = groupA.offsetHeight;
+    if (groupA && groupA.offsetHeight > 0) {
+      groupHeight = groupA.offsetHeight;
+    }
   }
+
+  function initScroll() {
+    updateHeight();
+    // Start centered at group-b so we can smoothly scroll downward (decrement scrollY)
+    if (window.scrollY === 0 && groupHeight > 0) {
+      window.scrollTo(0, groupHeight);
+    }
+  }
+
+  initScroll();
   window.addEventListener('resize', updateHeight, { passive: true });
+  window.addEventListener('load', initScroll);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(initScroll);
+  }
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (prefersReducedMotion.matches) return;
-
-  const pixelsPerSecond = 60; // Clean, steady downward scroll
+  const pixelsPerSecond = 65; // Steady, fluid downward movement
   let lastTime = performance.now();
   let isPaused = false;
   let resumeTimer = null;
@@ -33,7 +50,7 @@
     }, 1200);
   }
 
-  // Allow intuitive manual user scrolling without fighting the autoscroll
+  // Allow intuitive manual user interaction
   window.addEventListener('wheel', pauseScroll, { passive: true });
   window.addEventListener('touchstart', pauseScroll, { passive: true });
   window.addEventListener('touchmove', pauseScroll, { passive: true });
@@ -49,15 +66,17 @@
     lastTime = now;
 
     if (!isPaused && dt > 0) {
-      window.scrollBy(0, pixelsPerSecond * dt);
+      // Negative delta scrolls up in document -> causes text to visually move DOWN
+      window.scrollBy(0, -pixelsPerSecond * dt);
     }
 
-    // Seamless infinite wrap
+    // Seamless infinite wrap in both directions
     if (groupHeight > 0) {
-      if (window.scrollY >= groupHeight) {
-        window.scrollTo(0, window.scrollY - groupHeight);
-      } else if (window.scrollY <= 0 && isPaused) {
+      // When scrolling down, scrollY decreases. Wrap before hitting 0 so there is never a boundary hitch.
+      if (window.scrollY <= 100) {
         window.scrollTo(0, window.scrollY + groupHeight);
+      } else if (window.scrollY >= groupHeight * 2) {
+        window.scrollTo(0, window.scrollY - groupHeight);
       }
     }
 
@@ -66,6 +85,7 @@
 
   requestAnimationFrame(tick);
 })();
+
 
 
 
