@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>BUILD SOMETHING — OXFORD, UK</title>
-  <meta name="description" content="BUILD SOMETHING — NFRSTCT High Precision Lab, Oxford, UK. lab@RSH.ai">
+  <title>BUILD SOMETHING</title>
+  <meta name="description" content="BUILD SOMETHING — NFRSTCT High Precision Lab. lab@RSH.ai">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=Syne:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@700&family=Syne:wght@900&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
 </head>
@@ -30,31 +30,27 @@
     <div class="reg-cross top-left" aria-hidden="true">+</div>
     <div class="reg-cross top-right" aria-hidden="true">+</div>
 
-    <!-- Stylised 3D Wireframe Canvas: Oxford Radcliffe Camera Architectural Model -->
-    <div class="wireframe-container" id="wireframe-mount">
-      <canvas id="wireframe-canvas" aria-label="Stylised 3D wireframe model of Oxford Radcliffe Camera rotating around vertical axis"></canvas>
+    <!-- Oxford Architectural Skyline Graphic -->
+    <div class="skyline-container" id="skyline-mount" aria-hidden="true">
+      <img src="skyline.png" srcset="skyline.png 1x, skyline@2x.png 2x" alt="Oxford Architectural Skyline" class="skyline-graphic">
     </div>
 
     <!-- Middle-Aligned Poster Content & Typography -->
     <div class="poster-content">
-      <h1 class="poster-headline">
+      <h1 class="poster-headline" aria-label="BUILD SOMETHING">
         <span class="row-1">BUILD</span>
         <span class="row-2">SOMETHING</span>
       </h1>
-
-      <!-- Contact Line Rule & Email Aligned with Oxford Location Tag -->
-      <div class="contact-block">
-        <a href="mailto:lab@RSH.ai" class="contact-email">lab@RSH.ai</a>
-        <span class="location-label">oxford</span>
-      </div>
     </div>
+
+    <!-- Bottom-Right Professional Email Contact -->
+    <a href="mailto:lab@RSH.ai" class="contact-email">lab@RSH.ai</a>
 
     <!-- Bottom Corner Crosses -->
     <div class="reg-cross bottom-left" aria-hidden="true">+</div>
     <div class="reg-cross bottom-right" aria-hidden="true">+</div>
   </main>
 
-  <script src="wireframe.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

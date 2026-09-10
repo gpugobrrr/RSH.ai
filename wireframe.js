@@ -1,6 +1,6 @@
 /**
  * BUILD SOMETHING — NFRSTCT HIGH PRECISION LAB
- * Stylised 3D Wireframe Model: Oxford Radcliffe Camera
+ * Stylised 3D Wireframe Model: Radcliffe Camera
  * Continuous 4-Phase Architectural Transformation Cycle
  * 
  * 4-Phase Cycle:
