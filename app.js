@@ -1,5 +1,5 @@
 /**
- * BUILD SOMETHING — High Precision Lab
+ * BUILD SMTHN — High Precision Lab
  * Downward Scrolling & Seamless Tiled Typography Stream
  */
 
