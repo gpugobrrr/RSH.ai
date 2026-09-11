@@ -62,7 +62,8 @@ body {
   display: block;
 }
 
-/* Fixed Contact Link */
+/* Fixed Contact Bar */
+.contact-bar,
 .contact-email {
   position: fixed;
   bottom: max(1rem, env(safe-area-inset-bottom));
@@ -82,10 +83,54 @@ body {
   white-space: nowrap;
 }
 
+.contact-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.contact-tagline {
+  line-height: 1.2;
+}
+
+.contact-divider {
+  opacity: 0.5;
+  user-select: none;
+}
+
+.linkedin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: var(--color-primary);
+  text-decoration: none;
+  background-color: var(--color-bg);
+  border: 1.5px solid var(--color-primary);
+  padding: 0.12rem 0.45rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+  pointer-events: auto;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.linkedin-btn:hover,
+.linkedin-btn:active,
 .contact-email:hover,
 .contact-email:active {
   background-color: var(--color-primary);
   color: var(--color-bg);
+}
+
+.linkedin-icon {
+  width: 0.95em;
+  height: 0.95em;
+  flex-shrink: 0;
+  stroke: currentColor;
 }
 
 /* Scrollable Tiled Typography Track */
@@ -154,6 +199,7 @@ body {
     margin-left: clamp(0.2rem, 2vw, 1rem);
   }
 
+  .contact-bar,
   .contact-email {
     font-size: clamp(0.62rem, 2.6vw, 0.85rem);
     padding: 0.2rem 0.35rem;
@@ -162,6 +208,14 @@ body {
     max-width: calc(100vw - 1.2rem);
     bottom: max(0.6rem, env(safe-area-inset-bottom));
     right: max(0.6rem, env(safe-area-inset-right));
+  }
+
+  .contact-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
   }
 
   .skyline-img {
